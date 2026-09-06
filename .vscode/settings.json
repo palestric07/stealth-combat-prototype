@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "AI-Drone-Threat-Prototype.slnx"
+    "dotnet.defaultSolution": "stealth-combat-prototype.slnx"
 }
