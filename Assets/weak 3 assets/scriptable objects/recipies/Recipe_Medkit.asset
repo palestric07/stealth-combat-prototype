@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 749906f992656dd4b8472d5b5127dd16, type: 3}
+  m_Name: Recipe_Medkit
+  m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipe
+  recipeName: Medkit
+  resultItem: {fileID: 11400000, guid: 4dc2fe24ea2f95d4ab4634c59467b117, type: 2}
+  resultAmount: 1
+  ingredients:
+  - item: {fileID: 11400000, guid: 11acb00248503054999b035cdf31a00a, type: 2}
+    amount: 1
+  - item: {fileID: 11400000, guid: 44374e6e04bc14c4ab0de1ec683eab64, type: 2}
+    amount: 1
