@@ -48,6 +48,7 @@ public class EnemyAI : MonoBehaviour
         if (health != null)
         {
             health.OnDeath += HandleDeath;
+            health.OnHalfHealth += TriggerHalfHealthKnockdown; // Half health event link
         }
     }
 
@@ -56,6 +57,7 @@ public class EnemyAI : MonoBehaviour
         if (health != null)
         {
             health.OnDeath -= HandleDeath;
+            health.OnHalfHealth -= TriggerHalfHealthKnockdown;
         }
     }
 
@@ -78,7 +80,6 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
 
-        // Speed parameter update taake Walk/Run blend tree chal sake
         if (animator != null && agent != null && agent.enabled)
         {
             animator.SetFloat("Speed", agent.velocity.magnitude);
@@ -146,26 +147,24 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    // Normal hits par sirf flinch animation chalegi
     public void ReceiveHit(bool isHeavyKick)
     {
-        if (currentState == AIState.Dead) return;
+        if (currentState == AIState.Dead || isKnockedDown) return;
 
-        if (isHeavyKick)
-        {
-            StartCoroutine(KnockdownRoutine());
-        }
-        else
-        {
-            if (Random.value < 0.7f)
-            {
-                animator.SetTrigger("Hit");
-            }
-        }
+        animator.SetTrigger("Hit");
 
         if (currentState == AIState.Patrol)
         {
             currentState = AIState.Chase;
         }
+    }
+
+    // 50% health par ye method call hoga
+    private void TriggerHalfHealthKnockdown()
+    {
+        if (currentState == AIState.Dead) return;
+        StartCoroutine(KnockdownRoutine());
     }
 
     private IEnumerator KnockdownRoutine()
@@ -181,8 +180,8 @@ public class EnemyAI : MonoBehaviour
 
         animator.SetTrigger("Knockdown");
 
-        // Stumble fall aur stand up clips ka timing window
-        yield return new WaitForSeconds(3.5f);
+        // Enemy zameen par 4 seconds tak stun rahega
+        yield return new WaitForSeconds(4.0f);
 
         isKnockedDown = false;
         if (agent != null && agent.enabled)
@@ -199,22 +198,35 @@ public class EnemyAI : MonoBehaviour
 
         foreach (Collider p in hitPlayers)
         {
-            IDamageable playerHealth = p.GetComponentInParent<IDamageable>();
-            if (playerHealth != null && !playerHealth.IsDead)
+            IDamageable target = p.GetComponentInParent<IDamageable>();
+            if (target != null && !target.IsDead)
             {
-                playerHealth.TakeDamage(attackDamage);
+                target.TakeDamage(attackDamage);
             }
         }
     }
 
     private void HandleDeath()
     {
+        if (currentState == AIState.Dead) return;
         currentState = AIState.Dead;
 
-        if (agent != null)
+        StopAllCoroutines();
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Die");
+        }
+
+        StartCoroutine(DeathRoutine());
+    }
+
+    private IEnumerator DeathRoutine()
+    {
+        if (agent != null && agent.enabled)
         {
             agent.isStopped = true;
-            agent.enabled = false;
+            agent.velocity = Vector3.zero;
         }
 
         Collider col = GetComponent<Collider>();
@@ -223,7 +235,12 @@ public class EnemyAI : MonoBehaviour
             col.enabled = false;
         }
 
-        animator.SetTrigger("Die");
+        yield return new WaitForSeconds(1.5f);
+
+        if (agent != null)
+        {
+            agent.enabled = false;
+        }
     }
 
     private void OnDrawGizmosSelected()

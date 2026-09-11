@@ -16,5 +16,5 @@ MonoBehaviour:
   transitionDuration: 0.1
   damage: 20
   attackRange: 1.5
-  attackSwingSound: {fileID: 0}
-  hitImpactSound: {fileID: 0}
+  attackSwingSound: {fileID: 8300000, guid: e4fbc2f3e504eee4a879b3943c63912a, type: 3}
+  hitImpactSound: {fileID: 8300000, guid: 67625d800cd21e9478567664e74fc804, type: 3}
